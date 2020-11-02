@@ -20,6 +20,10 @@
     <!--子模块依赖-->
     <modules>
         <module>foodie-dev-api</module>
+        <module>foodie-dev-common</module>
+        <module>foodie-dev-pojo</module>
+        <module>foodie-dev-mapper</module>
+        <module>foodie-dev-service</module>
     </modules>
 
     <properties>

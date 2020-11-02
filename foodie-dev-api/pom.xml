@@ -18,7 +18,17 @@
     </properties>
 
     <dependencies>
-
+        <!--
+                    common-mail
+                    api -> service -> mapper -> pojo -> common
+                    api -> common-mail
+                    api可以使用service、pojo与common中相应的方法的
+                -->
+        <dependency>
+            <groupId>com.imooc</groupId>
+            <artifactId>foodie-dev-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
