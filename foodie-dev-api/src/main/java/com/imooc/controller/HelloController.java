@@ -3,6 +3,7 @@ package com.imooc.controller;
 import com.imooc.service.StuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2020/10/30 11:30
  * @Description:
  */
-
 @RestController
 public class HelloController {
 
@@ -22,8 +22,9 @@ public class HelloController {
         return "hello world";
     }
 
-    @GetMapping("getStu")
-    public Object getStu(){
-        return null;
+    @PostMapping("saveStu")
+    public Object saveStu(){
+        stuService.saveStu();
+        return "OK";
     }
 }

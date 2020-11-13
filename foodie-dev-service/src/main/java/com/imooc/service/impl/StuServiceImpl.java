@@ -1,5 +1,6 @@
 package com.imooc.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.imooc.mapper.StuMapper;
 import com.imooc.pojo.Stu;
 import com.imooc.service.StuService;
@@ -8,8 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class StuServiceImpl implements StuService {
+/**
+ * (Stu)表服务实现类
+ *
+ * @author 张启航
+ * @since 2020-11-13 17:17:25
+ */
+@Service("stuService")
+public class StuServiceImpl extends ServiceImpl<StuMapper, Stu> implements StuService {
 
     @Autowired
     public StuMapper stuMapper;
@@ -17,7 +24,7 @@ public class StuServiceImpl implements StuService {
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public Stu getStuInfo(int id) {
-        return stuMapper.selectByPrimaryKey(id);
+        return stuMapper.selectById(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -38,13 +45,13 @@ public class StuServiceImpl implements StuService {
         stu.setId(id);
         stu.setName("lucy");
         stu.setAge(20);
-        stuMapper.updateByPrimaryKey(stu);
+        stuMapper.updateById(stu);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void deleteStu(int id) {
-        stuMapper.deleteByPrimaryKey(id);
+        stuMapper.deleteById(id);
     }
 
 

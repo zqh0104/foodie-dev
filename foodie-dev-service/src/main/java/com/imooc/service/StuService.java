@@ -1,8 +1,9 @@
 package com.imooc.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.imooc.pojo.Stu;
 
-public interface StuService {
+public interface StuService extends IService<Stu> {
 
     public Stu getStuInfo(int id);
 
