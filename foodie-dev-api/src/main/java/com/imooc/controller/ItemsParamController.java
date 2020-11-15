@@ -1,12 +1,12 @@
-package com.imooc.controller.controller;
+package com.imooc.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.imooc.pojo.ItemsImg;
-import com.imooc.service.ItemsImgService;
+import com.imooc.pojo.ItemsParam;
+import com.imooc.service.ItemsParamService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -14,30 +14,30 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 商品图片 (ItemsImg)表控制层
+ * 商品参数 (ItemsParam)表控制层
  *
  * @author 张启航
  * @since 2020-11-13 18:07:04
  */
 @RestController
-@RequestMapping("itemsImg")
-public class ItemsImgController extends ApiController {
+@RequestMapping("itemsParam")
+public class ItemsParamController extends ApiController {
     /**
      * 服务对象
      */
     @Resource
-    private ItemsImgService itemsImgService;
+    private ItemsParamService itemsParamService;
 
     /**
      * 分页查询所有数据
      *
-     * @param page     分页对象
-     * @param itemsImg 查询实体
+     * @param page       分页对象
+     * @param itemsParam 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<ItemsImg> page, ItemsImg itemsImg) {
-        return success(this.itemsImgService.page(page, new QueryWrapper<>(itemsImg)));
+    public R selectAll(Page<ItemsParam> page, ItemsParam itemsParam) {
+        return success(this.itemsParamService.page(page, new QueryWrapper<>(itemsParam)));
     }
 
     /**
@@ -48,29 +48,29 @@ public class ItemsImgController extends ApiController {
      */
     @GetMapping("{id}")
     public R selectOne(@PathVariable Serializable id) {
-        return success(this.itemsImgService.getById(id));
+        return success(this.itemsParamService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param itemsImg 实体对象
+     * @param itemsParam 实体对象
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody ItemsImg itemsImg) {
-        return success(this.itemsImgService.save(itemsImg));
+    public R insert(@RequestBody ItemsParam itemsParam) {
+        return success(this.itemsParamService.save(itemsParam));
     }
 
     /**
      * 修改数据
      *
-     * @param itemsImg 实体对象
+     * @param itemsParam 实体对象
      * @return 修改结果
      */
     @PutMapping
-    public R update(@RequestBody ItemsImg itemsImg) {
-        return success(this.itemsImgService.updateById(itemsImg));
+    public R update(@RequestBody ItemsParam itemsParam) {
+        return success(this.itemsParamService.updateById(itemsParam));
     }
 
     /**
@@ -81,6 +81,6 @@ public class ItemsImgController extends ApiController {
      */
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.itemsImgService.removeByIds(idList));
+        return success(this.itemsParamService.removeByIds(idList));
     }
 }

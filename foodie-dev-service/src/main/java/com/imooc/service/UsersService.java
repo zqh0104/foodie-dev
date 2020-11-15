@@ -2,6 +2,7 @@ package com.imooc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.imooc.pojo.Users;
+import com.imooc.pojo.bo.UserBO;
 
 /**
  * 用户表 (Users)表服务接口
@@ -15,5 +16,12 @@ public interface UsersService extends IService<Users> {
      * 判断用户名是否存在
      */
     public boolean queryUsernameIsExist(String username);
+
+    /**
+     * 注册用户
+     * @param userBO
+     * @return
+     */
+    public Users createUser(UserBO userBO);
 
 }

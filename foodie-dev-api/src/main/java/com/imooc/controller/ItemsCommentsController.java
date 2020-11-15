@@ -1,12 +1,12 @@
-package com.imooc.controller.controller;
+package com.imooc.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.imooc.pojo.UserAddress;
-import com.imooc.service.UserAddressService;
+import com.imooc.pojo.ItemsComments;
+import com.imooc.service.ItemsCommentsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -14,30 +14,30 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 用户地址表 (UserAddress)表控制层
+ * 商品评价表 (ItemsComments)表控制层
  *
  * @author 张启航
- * @since 2020-11-13 18:07:06
+ * @since 2020-11-13 18:07:04
  */
 @RestController
-@RequestMapping("userAddress")
-public class UserAddressController extends ApiController {
+@RequestMapping("itemsComments")
+public class ItemsCommentsController extends ApiController {
     /**
      * 服务对象
      */
     @Resource
-    private UserAddressService userAddressService;
+    private ItemsCommentsService itemsCommentsService;
 
     /**
      * 分页查询所有数据
      *
-     * @param page        分页对象
-     * @param userAddress 查询实体
+     * @param page          分页对象
+     * @param itemsComments 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<UserAddress> page, UserAddress userAddress) {
-        return success(this.userAddressService.page(page, new QueryWrapper<>(userAddress)));
+    public R selectAll(Page<ItemsComments> page, ItemsComments itemsComments) {
+        return success(this.itemsCommentsService.page(page, new QueryWrapper<>(itemsComments)));
     }
 
     /**
@@ -48,29 +48,29 @@ public class UserAddressController extends ApiController {
      */
     @GetMapping("{id}")
     public R selectOne(@PathVariable Serializable id) {
-        return success(this.userAddressService.getById(id));
+        return success(this.itemsCommentsService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param userAddress 实体对象
+     * @param itemsComments 实体对象
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody UserAddress userAddress) {
-        return success(this.userAddressService.save(userAddress));
+    public R insert(@RequestBody ItemsComments itemsComments) {
+        return success(this.itemsCommentsService.save(itemsComments));
     }
 
     /**
      * 修改数据
      *
-     * @param userAddress 实体对象
+     * @param itemsComments 实体对象
      * @return 修改结果
      */
     @PutMapping
-    public R update(@RequestBody UserAddress userAddress) {
-        return success(this.userAddressService.updateById(userAddress));
+    public R update(@RequestBody ItemsComments itemsComments) {
+        return success(this.itemsCommentsService.updateById(itemsComments));
     }
 
     /**
@@ -81,6 +81,6 @@ public class UserAddressController extends ApiController {
      */
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.userAddressService.removeByIds(idList));
+        return success(this.itemsCommentsService.removeByIds(idList));
     }
 }

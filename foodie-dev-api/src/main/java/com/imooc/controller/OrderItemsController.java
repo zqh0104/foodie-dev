@@ -1,4 +1,4 @@
-package com.imooc.controller.controller;
+package com.imooc.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

@@ -1,12 +1,12 @@
-package com.imooc.controller.controller;
+package com.imooc.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.imooc.pojo.Orders;
-import com.imooc.service.OrdersService;
+import com.imooc.pojo.Carousel;
+import com.imooc.service.CarouselService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -14,30 +14,30 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 订单表;(Orders)表控制层
+ * 轮播图 (Carousel)表控制层
  *
  * @author 张启航
- * @since 2020-11-13 18:07:05
+ * @since 2020-11-13 18:07:02
  */
 @RestController
-@RequestMapping("orders")
-public class OrdersController extends ApiController {
+@RequestMapping("carousel")
+public class CarouselController extends ApiController {
     /**
      * 服务对象
      */
     @Resource
-    private OrdersService ordersService;
+    private CarouselService carouselService;
 
     /**
      * 分页查询所有数据
      *
-     * @param page   分页对象
-     * @param orders 查询实体
+     * @param page     分页对象
+     * @param carousel 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<Orders> page, Orders orders) {
-        return success(this.ordersService.page(page, new QueryWrapper<>(orders)));
+    public R selectAll(Page<Carousel> page, Carousel carousel) {
+        return success(this.carouselService.page(page, new QueryWrapper<>(carousel)));
     }
 
     /**
@@ -48,29 +48,29 @@ public class OrdersController extends ApiController {
      */
     @GetMapping("{id}")
     public R selectOne(@PathVariable Serializable id) {
-        return success(this.ordersService.getById(id));
+        return success(this.carouselService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param orders 实体对象
+     * @param carousel 实体对象
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody Orders orders) {
-        return success(this.ordersService.save(orders));
+    public R insert(@RequestBody Carousel carousel) {
+        return success(this.carouselService.save(carousel));
     }
 
     /**
      * 修改数据
      *
-     * @param orders 实体对象
+     * @param carousel 实体对象
      * @return 修改结果
      */
     @PutMapping
-    public R update(@RequestBody Orders orders) {
-        return success(this.ordersService.updateById(orders));
+    public R update(@RequestBody Carousel carousel) {
+        return success(this.carouselService.updateById(carousel));
     }
 
     /**
@@ -81,6 +81,6 @@ public class OrdersController extends ApiController {
      */
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.ordersService.removeByIds(idList));
+        return success(this.carouselService.removeByIds(idList));
     }
 }
