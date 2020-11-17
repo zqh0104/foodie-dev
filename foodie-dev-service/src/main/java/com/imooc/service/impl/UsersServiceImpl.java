@@ -76,4 +76,18 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         usersMapper.insert(user);
         return user;
     }
+
+    /**
+     * 检索用户名和密码是否匹配，用于登录
+     */
+    @Override
+    public Users queryUserForLogin(String username, String password) {
+        QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        queryWrapper.eq("password",password);
+
+        Users users = usersMapper.selectOne(queryWrapper);
+
+        return users;
+    }
 }

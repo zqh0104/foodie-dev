@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.imooc.commom.utils.CookieUtils;
 import com.imooc.commom.utils.IMOOCJSONResult;
+import com.imooc.commom.utils.JsonUtils;
 import com.imooc.commom.utils.MD5Utils;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
@@ -13,12 +15,12 @@ import com.imooc.service.UsersService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.sql.PseudoColumnUsage;
 import java.util.List;
 
 /**
@@ -56,7 +58,9 @@ public class PassportController extends ApiController {
 
     @ApiOperation(value = "用户注册",notes = "用户注册",httpMethod = "POST")
     @PostMapping("regist")
-    public IMOOCJSONResult regist(@RequestBody UserBO userBO){
+    public IMOOCJSONResult regist(@RequestBody UserBO userBO,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response){
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPwd = userBO.getConfirmPassword();
@@ -87,8 +91,66 @@ public class PassportController extends ApiController {
         // 4. 实现注册
         Users userResult = usersService.createUser(userBO);
 
+        userResult = setNullProperty(userResult);
+        CookieUtils.setCookie(request,response,"user",
+                JsonUtils.objectToJson(userResult),true);
+
         return IMOOCJSONResult.ok();
     }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
+    @PostMapping("/login")
+    public IMOOCJSONResult login(@RequestBody UserBO userBO,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        String username = userBO.getUsername();
+        String password = userBO.getPassword();
+
+        // 0. 判断用户名和密码必须不为空
+        if (StringUtils.isBlank(username) ||
+                StringUtils.isBlank(password)) {
+            return IMOOCJSONResult.errorMsg("用户名或密码不能为空");
+        }
+
+        // 1. 实现登录
+        Users userResult = usersService.queryUserForLogin(username,
+                MD5Utils.getMD5Str(password));
+
+        if (userResult == null) {
+            return IMOOCJSONResult.errorMsg("用户名或密码不正确");
+        }
+
+        userResult = setNullProperty(userResult);
+        CookieUtils.setCookie(request,response,"user",
+                JsonUtils.objectToJson(userResult),true);
+
+        // TODO 生成用户token，存入redis会话
+        // TODO 同步购物车数据
+
+        return IMOOCJSONResult.ok(userResult);
+    }
+
+    private Users setNullProperty(Users userResult) {
+        userResult.setPassword(null);
+        userResult.setMobile(null);
+        userResult.setEmail(null);
+        userResult.setCreatedTime(null);
+        userResult.setUpdatedTime(null);
+        userResult.setBirthday(null);
+        return userResult;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 分页查询所有数据

@@ -1,4 +1,4 @@
-package com.imooc.commom.config;
+package com.imooc.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
