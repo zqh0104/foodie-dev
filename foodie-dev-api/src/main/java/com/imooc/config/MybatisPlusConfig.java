@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @Description:
  */
 @Configuration
-// 扫描 mybatis 通用 mapper 所在的包
+// 扫描 mybatis 通用 mapper 所在的包mybatis-plusmybatis-plusmybatis-plus
 @MapperScan(basePackages = "com.imooc.mapper")
 public class MybatisPlusConfig {
 

@@ -52,6 +52,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Override
     public Users createUser(UserBO userBO) {
 
+//        try {
+//            Thread.sleep(3500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
         String userId = sid.nextShort();
 
         Users user = new Users();
@@ -82,6 +88,13 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
      */
     @Override
     public Users queryUserForLogin(String username, String password) {
+
+//        try {
+//            Thread.sleep(2500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
         QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",username);
         queryWrapper.eq("password",password);

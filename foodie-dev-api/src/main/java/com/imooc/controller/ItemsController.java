@@ -5,11 +5,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.imooc.commom.utils.IMOOCJSONResult;
 import com.imooc.pojo.Items;
+import com.imooc.pojo.ItemsImg;
+import com.imooc.pojo.ItemsParam;
+import com.imooc.pojo.ItemsSpec;
+import com.imooc.pojo.vo.ItemInfoVO;
 import com.imooc.service.ItemsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,14 +28,39 @@ import java.util.List;
  * @author 张启航
  * @since 2020-11-13 18:07:04
  */
+@Api(value = "商品接口", tags = {"商品信息展示的相关接口"})
 @RestController
 @RequestMapping("items")
 public class ItemsController extends ApiController {
     /**
      * 服务对象
      */
-    @Resource
-    private ItemsService itemsService;
+    @Autowired
+    private ItemsService itemService;
+
+    @ApiOperation(value = "查询商品详情", notes = "查询商品详情", httpMethod = "GET")
+    @GetMapping("/info/{itemId}")
+    public IMOOCJSONResult info(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @PathVariable String itemId) {
+
+        if (StringUtils.isBlank(itemId)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+        Items item = itemService.queryItemById(itemId);
+        List<ItemsImg> itemImgList = itemService.queryItemImgList(itemId);
+        List<ItemsSpec> itemsSpecList = itemService.queryItemSpecList(itemId);
+        ItemsParam itemsParam = itemService.queryItemParam(itemId);
+
+        ItemInfoVO itemInfoVO = new ItemInfoVO();
+        itemInfoVO.setItem(item);
+        itemInfoVO.setItemImgList(itemImgList);
+        itemInfoVO.setItemSpecList(itemsSpecList);
+        itemInfoVO.setItemParams(itemsParam);
+
+        return IMOOCJSONResult.ok(itemInfoVO);
+    }
 
     /**
      * 分页查询所有数据
@@ -37,7 +71,7 @@ public class ItemsController extends ApiController {
      */
     @GetMapping
     public R selectAll(Page<Items> page, Items items) {
-        return success(this.itemsService.page(page, new QueryWrapper<>(items)));
+        return success(this.itemService.page(page, new QueryWrapper<>(items)));
     }
 
     /**
@@ -48,7 +82,7 @@ public class ItemsController extends ApiController {
      */
     @GetMapping("{id}")
     public R selectOne(@PathVariable Serializable id) {
-        return success(this.itemsService.getById(id));
+        return success(this.itemService.getById(id));
     }
 
     /**
@@ -59,7 +93,7 @@ public class ItemsController extends ApiController {
      */
     @PostMapping
     public R insert(@RequestBody Items items) {
-        return success(this.itemsService.save(items));
+        return success(this.itemService.save(items));
     }
 
     /**
@@ -70,7 +104,7 @@ public class ItemsController extends ApiController {
      */
     @PutMapping
     public R update(@RequestBody Items items) {
-        return success(this.itemsService.updateById(items));
+        return success(this.itemService.updateById(items));
     }
 
     /**
@@ -81,6 +115,6 @@ public class ItemsController extends ApiController {
      */
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.itemsService.removeByIds(idList));
+        return success(this.itemService.removeByIds(idList));
     }
 }
