@@ -1,10 +1,14 @@
 package com.imooc.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
+import com.imooc.pojo.vo.CommentLevelCountsVO;
+import com.imooc.pojo.vo.ItemCommentVO;
+import com.imooc.pojo.vo.SearchItemsVO;
 
 import java.util.List;
 
@@ -43,5 +47,42 @@ public interface ItemsService extends IService<Items> {
      * @return
      */
     public ItemsParam queryItemParam(String itemId);
+
+    /**
+     * 根据商品id查询商品的评价等级数量
+     * @param itemId
+     */
+    public CommentLevelCountsVO queryCommentCounts(String itemId);
+
+    /**
+     * 根据商品id查询商品的评价（分页）
+     * @param itemId
+     * @param level
+     * @return
+     */
+    public Page<ItemCommentVO> queryPagedComments(String itemId, Integer level,
+                                                  Integer page, Integer pageSize);
+
+    /**
+     * 搜索商品列表
+     * @param keywords
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Page<SearchItemsVO> searhItems(String keywords, String sort,
+                                          Integer page, Integer pageSize);
+
+    /**
+     * 搜索商品列表
+     * @param catId
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Page<SearchItemsVO> searhItems(Integer catId, String sort,
+                                          Integer page, Integer pageSize);
 
 }

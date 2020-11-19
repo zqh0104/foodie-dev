@@ -10,7 +10,10 @@ import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
+import com.imooc.pojo.vo.CommentLevelCountsVO;
+import com.imooc.pojo.vo.ItemCommentVO;
 import com.imooc.pojo.vo.ItemInfoVO;
+import com.imooc.pojo.vo.SearchItemsVO;
 import com.imooc.service.ItemsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,6 +64,119 @@ public class ItemsController extends ApiController {
 
         return IMOOCJSONResult.ok(itemInfoVO);
     }
+
+    @ApiOperation(value = "查询商品评价等级", notes = "查询商品评价等级", httpMethod = "GET")
+    @GetMapping("/commentLevel")
+    public IMOOCJSONResult commentLevel(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @RequestParam String itemId) {
+
+        if (StringUtils.isBlank(itemId)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+        CommentLevelCountsVO countsVO = itemService.queryCommentCounts(itemId);
+
+        return IMOOCJSONResult.ok(countsVO);
+    }
+
+    @ApiOperation(value = "查询商品评论", notes = "查询商品评论", httpMethod = "GET")
+    @GetMapping("/comments")
+    public IMOOCJSONResult comments(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @RequestParam String itemId,
+            @ApiParam(name = "level", value = "评价等级", required = false)
+            @RequestParam Integer level,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @RequestParam(name = "page",defaultValue = "1") Integer page,
+            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize) {
+
+        if (StringUtils.isBlank(itemId)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+//        if (page == null) {
+//            page = 1;
+//        }
+//
+//        if (pageSize == null) {
+//            pageSize = COMMON_PAGE_SIZE;
+//        }
+
+        Page<ItemCommentVO> itemCommentVOPage = itemService.queryPagedComments(itemId, level, page, pageSize);
+
+        return IMOOCJSONResult.ok(itemCommentVOPage);
+    }
+
+    @ApiOperation(value = "搜索商品列表", notes = "搜索商品列表", httpMethod = "GET")
+    @GetMapping("/search")
+    public IMOOCJSONResult search(
+            @ApiParam(name = "keywords", value = "关键字", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "排序", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @RequestParam(name = "page",defaultValue = "1") Integer page,
+            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize) {
+
+        if (StringUtils.isBlank(keywords)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+//        if (page == null) {
+//            page = 1;
+//        }
+//
+//        if (pageSize == null) {
+//            pageSize = PAGE_SIZE;
+//        }
+
+        Page<SearchItemsVO> searchItemsVOPage = itemService.searhItems(keywords, sort, page, pageSize);
+
+        return IMOOCJSONResult.ok(searchItemsVOPage);
+    }
+
+    @ApiOperation(value = "通过分类id搜索商品列表", notes = "通过分类id搜索商品列表", httpMethod = "GET")
+    @GetMapping("/catItems")
+    public IMOOCJSONResult catItems(
+            @ApiParam(name = "catId", value = "三级分类id", required = true)
+            @RequestParam Integer catId,
+            @ApiParam(name = "sort", value = "排序", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @RequestParam(name = "page",defaultValue = "1") Integer page,
+            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @RequestParam(name = "pageSize",defaultValue = "10") Integer pageSize) {
+
+        if (catId == null) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+//        if (page == null) {
+//            page = 1;
+//        }
+//
+//        if (pageSize == null) {
+//            pageSize = PAGE_SIZE;
+//        }
+
+        Page<SearchItemsVO> searchItemsVOPage = itemService.searhItems(catId, sort, page, pageSize);
+
+        return IMOOCJSONResult.ok(searchItemsVOPage);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 分页查询所有数据
