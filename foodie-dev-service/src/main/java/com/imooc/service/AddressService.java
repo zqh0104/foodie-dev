@@ -9,6 +9,6 @@ import com.imooc.pojo.UserAddress;
  * @author 张启航
  * @since 2020-11-13 17:09:12
  */
-public interface UserAddressService extends IService<UserAddress> {
+public interface AddressService extends IService<UserAddress> {
 
 }
