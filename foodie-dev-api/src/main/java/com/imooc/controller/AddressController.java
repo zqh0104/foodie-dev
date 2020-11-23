@@ -1,6 +1,7 @@
 package com.imooc.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.imooc.commom.enums.YesOrNo;
 import com.imooc.commom.utils.IMOOCJSONResult;
 import com.imooc.commom.utils.MobileEmailUtils;
 import com.imooc.pojo.UserAddress;
@@ -121,49 +122,77 @@ public class AddressController {
         return IMOOCJSONResult.ok();
     }
 
-//    @ApiOperation(value = "用户修改地址", notes = "用户修改地址", httpMethod = "POST")
-//    @PostMapping("/update")
-//    public IMOOCJSONResult update(@RequestBody AddressBO addressBO) {
-//
-//        if (StringUtils.isBlank(addressBO.getAddressId())) {
-//            return IMOOCJSONResult.errorMsg("修改地址错误：addressId不能为空");
-//        }
-//
-//        IMOOCJSONResult checkRes = checkAddress(addressBO);
-//        if (checkRes.getStatus() != 200) {
-//            return checkRes;
-//        }
-//
-//        addressService.updateUserAddress(addressBO);
-//
-//        return IMOOCJSONResult.ok();
-//    }
+    @ApiOperation(value = "用户修改地址", notes = "用户修改地址", httpMethod = "POST")
+    @PostMapping("/update")
+    public IMOOCJSONResult update(@RequestBody AddressBO addressBO) {
 
-//    @ApiOperation(value = "用户删除地址", notes = "用户删除地址", httpMethod = "POST")
-//    @PostMapping("/delete")
-//    public IMOOCJSONResult delete(
-//            @RequestParam String userId,
-//            @RequestParam String addressId) {
-//
-//        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
-//            return IMOOCJSONResult.errorMsg("");
-//        }
-//
-//        addressService.deleteUserAddress(userId, addressId);
-//        return IMOOCJSONResult.ok();
-//    }
-//
-//    @ApiOperation(value = "用户设置默认地址", notes = "用户设置默认地址", httpMethod = "POST")
-//    @PostMapping("/setDefalut")
-//    public IMOOCJSONResult setDefalut(
-//            @RequestParam String userId,
-//            @RequestParam String addressId) {
-//
-//        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
-//            return IMOOCJSONResult.errorMsg("");
-//        }
-//
-//        addressService.updateUserAddressToBeDefault(userId, addressId);
-//        return IMOOCJSONResult.ok();
-//    }
+        if (StringUtils.isBlank(addressBO.getAddressId())) {
+            return IMOOCJSONResult.errorMsg("修改地址错误：addressId不能为空");
+        }
+
+        IMOOCJSONResult checkRes = checkAddress(addressBO);
+        if (checkRes.getStatus() != 200) {
+            return checkRes;
+        }
+
+        String addressId = addressBO.getAddressId();
+
+        UserAddress pendingAddress = new UserAddress();
+        BeanUtils.copyProperties(addressBO, pendingAddress);
+
+        pendingAddress.setId(addressId);
+        pendingAddress.setUpdatedTime(new Date());
+
+        addressService.updateById(pendingAddress);
+
+        return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "用户删除地址", notes = "用户删除地址", httpMethod = "POST")
+    @PostMapping("/delete")
+    public IMOOCJSONResult delete(
+            @RequestParam String userId,
+            @RequestParam String addressId) {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return IMOOCJSONResult.errorMsg("");
+        }
+
+        QueryWrapper<UserAddress> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",addressId);
+        queryWrapper.eq("user_id",userId);
+
+        addressService.remove(queryWrapper);
+        return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "用户设置默认地址", notes = "用户设置默认地址", httpMethod = "POST")
+    @PostMapping("/setDefalut")
+    public IMOOCJSONResult setDefalut(
+            @RequestParam String userId,
+            @RequestParam String addressId) {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(addressId)) {
+            return IMOOCJSONResult.errorMsg("");
+        }
+
+        // 1. 查找默认地址，设置为不默认
+        QueryWrapper<UserAddress> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("is_default",YesOrNo.YES.type);
+        List<UserAddress> list  = addressService.list(queryWrapper);
+        for (UserAddress ua : list) {
+            ua.setIsDefault(YesOrNo.NO.type);
+            addressService.updateById(ua);
+        }
+
+        // 2. 根据地址id修改为默认的地址
+        UserAddress defaultAddress = new UserAddress();
+        defaultAddress.setId(addressId);
+        defaultAddress.setUserId(userId);
+        defaultAddress.setIsDefault(YesOrNo.YES.type);
+        addressService.updateById(defaultAddress);
+
+        return IMOOCJSONResult.ok();
+    }
 }
