@@ -158,8 +158,9 @@ public class AddressController {
         }
 
         QueryWrapper<UserAddress> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId);
         queryWrapper.eq("id",addressId);
+        queryWrapper.eq("user_id",userId);
+
         addressService.remove(queryWrapper);
         return IMOOCJSONResult.ok();
     }
@@ -174,7 +175,23 @@ public class AddressController {
             return IMOOCJSONResult.errorMsg("");
         }
 
-        addressService.updateUserAddressToBeDefault(userId, addressId);
+        // 1. 查找默认地址，设置为不默认
+        QueryWrapper<UserAddress> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("is_default",YesOrNo.YES.type);
+        List<UserAddress> list  = addressService.list(queryWrapper);
+        for (UserAddress ua : list) {
+            ua.setIsDefault(YesOrNo.NO.type);
+            addressService.updateById(ua);
+        }
+
+        // 2. 根据地址id修改为默认的地址
+        UserAddress defaultAddress = new UserAddress();
+        defaultAddress.setId(addressId);
+        defaultAddress.setUserId(userId);
+        defaultAddress.setIsDefault(YesOrNo.YES.type);
+        addressService.updateById(defaultAddress);
+
         return IMOOCJSONResult.ok();
     }
 }
