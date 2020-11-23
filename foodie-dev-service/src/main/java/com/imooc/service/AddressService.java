@@ -11,4 +11,11 @@ import com.imooc.pojo.UserAddress;
  */
 public interface AddressService extends IService<UserAddress> {
 
+    /**
+     * 修改默认地址
+     * @param userId
+     * @param addressId
+     */
+    public void updateUserAddressToBeDefault(String userId, String addressId);
+
 }
