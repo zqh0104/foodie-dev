@@ -2,6 +2,7 @@ package com.imooc.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.imooc.commom.enums.PayMethod;
 import com.imooc.commom.utils.IMOOCJSONResult;
 import com.imooc.pojo.bo.SubmitOrderBO;
 import com.imooc.pojo.vo.MerchantOrdersVO;
@@ -52,7 +53,7 @@ public class OrdersController extends ApiController {
 //        System.out.println(submitOrderBO.toString());
 
         // 1. 创建订单
-        OrderVO orderVO = orderService.createOrder(submitOrderBO);
+        OrderVO orderVO = ordersService.createOrder(submitOrderBO);
         String orderId = orderVO.getOrderId();
 
         // 2. 创建订单以后，移除购物车中已结算（已提交）的商品
