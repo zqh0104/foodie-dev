@@ -18,4 +18,12 @@ public interface AddressService extends IService<UserAddress> {
      */
     public void updateUserAddressToBeDefault(String userId, String addressId);
 
+    /**
+     * 根据用户id和地址id，查询具体的用户地址对象信息
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    public UserAddress queryUserAddres(String userId, String addressId);
+
 }

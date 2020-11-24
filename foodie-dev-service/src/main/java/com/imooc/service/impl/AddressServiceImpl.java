@@ -46,4 +46,19 @@ public class AddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddre
         defaultAddress.setIsDefault(YesOrNo.YES.type);
         userAddressMapper.updateById(defaultAddress);
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public UserAddress queryUserAddres(String userId, String addressId) {
+
+        UserAddress singleAddress = new UserAddress();
+        singleAddress.setId(addressId);
+        singleAddress.setUserId(userId);
+
+        QueryWrapper<UserAddress> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",addressId);
+        queryWrapper.eq("user_id",userId);
+
+        return userAddressMapper.selectOne(queryWrapper);
+    }
 }
