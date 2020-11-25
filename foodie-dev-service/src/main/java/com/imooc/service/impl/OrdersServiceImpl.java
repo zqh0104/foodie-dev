@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.imooc.commom.enums.OrderStatusEnum;
 import com.imooc.commom.enums.YesOrNo;
+import com.imooc.commom.utils.DateUtil;
 import com.imooc.mapper.OrderItemsMapper;
 import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单表;(Orders)表服务实现类
@@ -163,5 +165,43 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         paidStatus.setPayTime(new Date());
 
         orderStatusMapper.update(paidStatus,queryWrapper);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public OrderStatus queryOrderStatusInfo(String orderId) {
+        QueryWrapper<OrderStatus> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id",orderId);
+        return orderStatusMapper.selectOne(queryWrapper);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void closeOrder() {
+
+        // 查询所有未付款订单，判断时间是否超时（1天），超时则关闭交易
+        QueryWrapper<OrderStatus> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_status",OrderStatusEnum.WAIT_PAY.type);
+        List<OrderStatus> list = orderStatusMapper.selectList(queryWrapper);
+        for (OrderStatus os : list) {
+            // 获得订单创建时间
+            Date createdTime = os.getCreatedTime();
+            // 和当前时间进行对比
+            int days = DateUtil.daysBetween(createdTime, new Date());
+            if (days >= 1) {
+                // 超过1天，关闭订单
+                doCloseOrder(os.getOrderId());
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    void doCloseOrder(String orderId) {
+        QueryWrapper<OrderStatus> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id",orderId);
+        OrderStatus close = new OrderStatus();
+        close.setOrderStatus(OrderStatusEnum.CLOSE.type);
+        close.setCloseTime(new Date());
+        orderStatusMapper.update(close,queryWrapper);
     }
 }

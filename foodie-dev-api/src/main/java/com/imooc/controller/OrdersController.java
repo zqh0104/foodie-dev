@@ -4,6 +4,7 @@ package com.imooc.controller;
 import com.imooc.commom.enums.OrderStatusEnum;
 import com.imooc.commom.enums.PayMethod;
 import com.imooc.commom.utils.IMOOCJSONResult;
+import com.imooc.pojo.OrderStatus;
 import com.imooc.pojo.bo.SubmitOrderBO;
 import com.imooc.pojo.vo.MerchantOrdersVO;
 import com.imooc.pojo.vo.OrderVO;
@@ -101,6 +102,12 @@ public class OrdersController extends BaseController {
     public Integer notifyMerchantOrderPaid(String merchantOrderId) {
         ordersService.updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
         return HttpStatus.OK.value();
+    }
+
+    @PostMapping("getPaidOrderInfo")
+    public IMOOCJSONResult getPaidOrderInfo(String orderId) {
+        OrderStatus orderStatus = ordersService.queryOrderStatusInfo(orderId);
+        return IMOOCJSONResult.ok(orderStatus);
     }
 
 }
