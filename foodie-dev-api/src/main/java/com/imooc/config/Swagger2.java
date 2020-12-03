@@ -20,7 +20,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class Swagger2 {
 
-    //    http://localhost:8088/swagger-ui.html     原路径
+    //    http://localhost:8088/swagger-ui.html     原路径2.x
+    //    http://localhost:8088/swagger-ui/index.html     原路径3.x
     //    http://localhost:8088/doc.html     第三方路径
 
     /**
