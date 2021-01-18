@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.imooc.commom.enums.YesOrNo;
 import com.imooc.commom.utils.IMOOCJSONResult;
+import com.imooc.commom.utils.JsonUtils;
+import com.imooc.commom.utils.RedisOperator;
 import com.imooc.pojo.Carousel;
 import com.imooc.pojo.Category;
 import com.imooc.pojo.vo.CategoryVO;
@@ -16,10 +18,12 @@ import com.imooc.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,13 +45,24 @@ public class IndexController extends ApiController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private RedisOperator redisOperator;
+
     @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
     @GetMapping("/carousel")
     public IMOOCJSONResult carousel(){
-        QueryWrapper<Carousel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("is_show", YesOrNo.YES.type);
-        queryWrapper.orderByAsc("sort");
-        List<Carousel> list = carouselService.list(queryWrapper);
+        List<Carousel> list = new ArrayList<>();
+        String carousel = redisOperator.get("carousel");
+        if (StringUtils.isBlank(carousel)) {
+            QueryWrapper<Carousel> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("is_show", YesOrNo.YES.type);
+            queryWrapper.orderByAsc("sort");
+            list = carouselService.list(queryWrapper);
+            redisOperator.set("carousel", JsonUtils.objectToJson(list));
+        } else {
+            list = JsonUtils.jsonToList(carousel,Carousel.class);
+        }
+
         return IMOOCJSONResult.ok(list);
     }
 
