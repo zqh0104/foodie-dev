@@ -7,10 +7,19 @@ spring:
     password: 123456
 
   redis:
+    #reids单机单实例
     database: 1
     host: 127.0.0.1
     port: 6379
     password:
+    #redis哨兵模式
+#    database: 1
+#    password:
+#    sentinel:
+#      master: test-master
+#      nodes: 192.168.0.xxx:26379,192.168.0.xxx:26379,192.168.0.xxx:26379
+
+
 
 #MyBatis-Plus 配置
 mybatis-plus:
