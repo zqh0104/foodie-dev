@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * @Author: QiHangZhang
  * @Date: 2020/10/30 11:30
@@ -36,6 +39,15 @@ public class HelloController {
     @PostMapping("saveStu")
     public Object saveStu(){
         stuService.saveStu();
+        return "OK";
+    }
+
+    @GetMapping("setSession")
+    public Object setSession(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.setAttribute("userInfo","new user");
+        session.setMaxInactiveInterval(3600);
+        session.getAttribute("userInfo");
         return "OK";
     }
 }

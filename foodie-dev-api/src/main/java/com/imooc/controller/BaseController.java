@@ -1,11 +1,16 @@
 package com.imooc.controller;
 
 import com.imooc.commom.utils.IMOOCJSONResult;
+import com.imooc.commom.utils.RedisOperator;
 import com.imooc.pojo.Orders;
+import com.imooc.pojo.Users;
+import com.imooc.pojo.vo.UsersVO;
 import com.imooc.service.center.MyOrdersService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.util.UUID;
 
 /**
  * @Author: 张启航
@@ -14,7 +19,12 @@ import java.io.File;
  */
 public class BaseController {
 
+    @Autowired
+    private RedisOperator redisOperator;
+
     public static final String FOODIE_SHOPCART = "shopcart";
+
+    public static final String REDIS_USER_TOKEN = "redis_user_token";
 
     // 支付中心的调用地址
     String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";		// produce
@@ -43,5 +53,17 @@ public class BaseController {
             return IMOOCJSONResult.errorMsg("订单不存在！");
         }
         return IMOOCJSONResult.ok(order);
+    }
+
+    public UsersVO conventUsersVO(Users user) {
+        // 实现用户的redis会话
+        String uniqueToken = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + user.getId(),
+                uniqueToken);
+
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(user, usersVO);
+        usersVO.setUserUniqueToken(uniqueToken);
+        return usersVO;
     }
 }

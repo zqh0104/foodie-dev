@@ -23,9 +23,12 @@ public class CorsConfig {
         // 1. 添加cors配置信息
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("http://127.0.0.1:8080");
         config.addAllowedOrigin("http://localhost:8082");
         config.addAllowedOrigin("http://139.196.156.193:8080");
         config.addAllowedOrigin("http://139.196.156.193");
+        config.addAllowedOrigin("http://qihang.cn.utools.club");
+        config.addAllowedOrigin("https://qihang.cn.utools.club");
 
         // 设置是否发送cookie信息
         config.setAllowCredentials(true);
